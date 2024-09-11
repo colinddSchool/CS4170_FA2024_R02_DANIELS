@@ -1,4 +1,4 @@
-CC = g++
+CC = g++-14
 LIBS = 
 CFLAGS =-O2 -g -Wall -c -fmessage-length=0 
 OPENMP = -fopenmp
@@ -20,7 +20,7 @@ CPP_DEPS := $(patsubst ../%.cpp, ./%.d, $(CPP_SRCS))
 all: OpenMP
 
 # Tool invocations
-PSO: $(OBJS) $(USER_OBJS)
+OpenMP: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	$(CC) -o $(TARGET) $(OPENMP) $(ARCH) $(OBJS) $(LIBS) 
