@@ -22,7 +22,7 @@ double serialTrap(double a, double b, int n) {
     return retValue;
 }
 
-void parallelTrap(double a, double b, int n, double &result){
+double parallelTrap(double a, double b, int n){
 
     double h, x, myRetValue;
     int myId = omp_get_thread_num();
@@ -43,10 +43,7 @@ void parallelTrap(double a, double b, int n, double &result){
     }
     myRetValue *= h;
 
-    #pragma omp critical
-    {
-        result += myRetValue;
-    }
+    return myRetValue;
 }
 
 int main(){
@@ -64,8 +61,23 @@ int main(){
 
     omp_set_num_threads(4);
     result = 0.0;
-    #pragma omp parallel
-    parallelTrap(a, b, n, result);
+
+    // #pragma omp parallel
+    // parallelTrap(a, b, n, result);
+    // std::cout << "Parallel Result: " << result << std::endl;
+
+    
+    #pragma omp parallel num_threads(4)
+    {
+        // #pragma omp critical
+
+        double localResult = 0;
+        localResult = parallelTrap(a, b, n);
+
+        #pragma omp critical
+        result += localResult;
+    }
+    
     std::cout << "Parallel Result: " << result << std::endl;
 
     return 0;
