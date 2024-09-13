@@ -1,4 +1,4 @@
-CC = g++-14
+CC = g++
 LIBS = 
 CFLAGS =-O2 -g -Wall -c -fmessage-length=0 
 OPENMP = -fopenmp
