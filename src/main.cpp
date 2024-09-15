@@ -31,19 +31,38 @@ double serialTrap(double(*f)(double n), double a, double b, int n){
 
 }
 
-void parallelizer(double a, double b, int n, int numThreads){
+void parallelizer(double a, double b, int n, int numThreads, double &serialTime){
     CStopWatch timer;
     double result = 0;
 
     #pragma omp parallel num_threads(numThreads)
+
     timer.startTimer();
     result = serialTrap(square, a, b, n);
     timer.stopTimer();
 
-    std::cout << numThreads << ", " << n << ", " << result << ", " << timer.getElapsedTime() << std::endl;
+    //set serial time
 
 
-   
+    if(numThreads == 1){
+        serialTime = timer.getElapsedTime();
+    } 
+    std::cout 
+    << numThreads << ", " 
+    << n << ", " 
+    << result << ", " 
+    << timer.getElapsedTime() << ", " 
+    << serialTime << ", "
+    << serialTime / timer.getElapsedTime() << ", "
+    << (serialTime / timer.getElapsedTime()) / numThreads
+    << std::endl;
+    if(numThreads == 12){
+        omp_set_num_threads(1);
+    } 
+    else {
+
+        omp_set_num_threads(numThreads+1);
+    }
 }
 
 int main(int argc, char** argv){
@@ -56,11 +75,16 @@ int main(int argc, char** argv){
     pointA = 0;
     pointB = 16;
 
-    std::cout << "numThreads, numTrapazoids, result, time" << std::endl; 
+    int lowerN = 1000000;
+    int upperN = lowerN * 10;
+
+    double serialTime;
+
+    std::cout << "numThreads, numTrapazoids, result, time, serialTime, speedup, efficiency" << std::endl; 
     
-    for(int threads = 1; threads <= 12; threads++){
-        for(int n = 10000; n <=100000; n += 10000){
-            parallelizer(pointA, pointB, n, threads);
+    for(int n = lowerN; n <= upperN; n += lowerN){
+        for(int threads = 1; threads <= 12; threads++){
+            parallelizer(pointA, pointB, n, threads, serialTime);
         }
 
     }
