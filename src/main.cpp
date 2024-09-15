@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     pointA = 0;
     pointB = 16;
 
-    int lowerN = 1000000;
+    int lowerN = 10000;
     int upperN = lowerN * 10;
 
     double serialTime;
